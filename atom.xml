@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://dabuliuzp.github.io</id>
+    <title>Dabuliuzp | 菜鸡</title>
+    <updated>2020-05-09T08:08:28.801Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://dabuliuzp.github.io"/>
+    <link rel="self" href="https://dabuliuzp.github.io/atom.xml"/>
+    <subtitle>『きみと见た梦は 必ず持ってくよ』</subtitle>
+    <logo>https://dabuliuzp.github.io/images/avatar.png</logo>
+    <icon>https://dabuliuzp.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, Dabuliuzp | 菜鸡</rights>
+    <entry>
+        <title type="html"><![CDATA[CF1303F Number of Components]]></title>
+        <id>https://dabuliuzp.github.io/post/cf1303f-number-of-components/</id>
+        <link href="https://dabuliuzp.github.io/post/cf1303f-number-of-components/">
+        </link>
+        <updated>2020-05-03T04:05:34.000Z</updated>
+        <content type="html"><![CDATA[<p>这题的思路很明显，但是我太菜了，被奇怪的细节恶心到了😆<br>
+看到 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub><mo>≤</mo><msub><mi>c</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">c_i\le c_{i+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7859700000000001em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathdefault">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span> ，很显然的，将元素相同的和一起，分块讨论。<br>
+对于一个块，考虑到有两种情况：</p>
+<ol>
+<li>同元素的联通块的个数，这个正序直接用并查集连接就可以维护了。</li>
+<li>其他元素的联通块个数，由于是分开讨论，所以不存在和修改的元素相同的元素，考虑倒序，每次恢复时相当于将周围的块联通，可以用并查集维护。<br>
+然后就是奇怪的细节问题了，我竟然栽在了求方格的序号上 😂<br>
+然后是丑陋的代码：</li>
+</ol>
+<pre><code>#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+using namespace std;
+
+const int M=305,N=2e6+5;
+
+int n,m,q,a[M][M];
+int fa[M*M],Fa[M*M],ans[N],Ans[N];
+int nxt[4][2]={{1,0},{0,1},{-1,0},{0,-1}};
+bool b[M][M];
+struct Query{
+	int x,y,c,nc;
+}Q[N];
+
+int read(){
+	int x=0,y=1;
+	char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){
+		if(ch=='-') y=-1;
+		ch=getchar();
+	}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){
+		x=x*10+ch-'0';
+		ch=getchar();
+	}
+	return x*y;
+}
+
+int num(int x,int y){
+	return m*(x-1)+y;
+}
+
+int find(int x){
+	if(x!=fa[x]) fa[x]=find(fa[x]);
+	return fa[x];
+}
+
+int Find(int x){
+	if(x!=Fa[x]) Fa[x]=Find(Fa[x]);
+	return Fa[x];
+}
+
+void solve(int l,int r){
+	for(int i=l;i&lt;=r;i++){
+		int x=Q[i].x,y=Q[i].y;
+		if(b[x][y]){
+			continue ;
+		}
+		b[x][y]=1;
+		ans[i]=1;
+		for(int k=0;k&lt;4;k++){
+			int nx=x+nxt[k][0],ny=y+nxt[k][1];
+			if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+			if(b[nx][ny]){
+				int Fx=Find(num(x,y)),Fy=Find(num(nx,ny));
+				if(Fx==Fy) continue ;
+				ans[i]--;
+				Fa[Fx]=Fy;
+			}
+		}
+	}
+//	printf(&quot;%d %d:&quot;,l,r);
+//	for(int i=l;i&lt;=r;i++) printf(&quot;%d &quot;,ans[i][0]);printf(&quot;\n&quot;);
+	for(int i=l;i&lt;=r;i++){
+		int x=Q[i].x,y=Q[i].y;
+		b[x][y]=0;
+		Fa[num(x,y)]=num(x,y);
+	}
+	for(int i=r;i&gt;=l;i--){
+		int x=Q[i].x,y=Q[i].y;
+		if(a[x][y]==Q[i].nc){
+			continue ;
+		}
+		a[x][y]=Q[i].nc;
+		ans[i]--;
+		fa[num(x,y)]=0;
+		for(int k=0;k&lt;4;k++){
+			int nx=x+nxt[k][0],ny=y+nxt[k][1];
+			if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+			if(a[x][y]==a[nx][ny]){
+				if(fa[num(x,y)]==0){
+					fa[num(x,y)]=find(num(nx,ny));
+					ans[i]++;
+					continue ;
+				}
+				int fx=find(num(x,y)),fy=find(num(nx,ny));
+				if(fx==fy) continue ;
+				ans[i]++;
+				fa[fx]=fy;
+			}
+		}
+		if(fa[num(x,y)]==0){
+			fa[num(x,y)]=num(x,y);
+		}
+	}
+//	printf(&quot;%d %d:&quot;,l,r);
+//	for(int i=l;i&lt;=r;i++) printf(&quot;%d &quot;,ans[i][1]);printf(&quot;\n&quot;);
+//	for(int i=r;i&gt;=l;i--){
+//		if(i==q) continue ;
+//		Ans[i]=Ans[i+1]-anss;
+//	}
+}
+
+int main(){
+	n=read(),m=read(),q=read();
+	for(int i=1;i&lt;=q;i++){
+		Q[i].x=read();
+		Q[i].y=read();
+		Q[i].c=read();
+		Q[i].nc=a[Q[i].x][Q[i].y];
+		a[Q[i].x][Q[i].y]=Q[i].c;
+	}
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			fa[num(i,j)]=Fa[num(i,j)]=num(i,j);
+		}
+	}
+	Ans[q]=0;
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			Ans[q]++;
+			for(int k=0;k&lt;4;k++){
+				int nx=i+nxt[k][0],ny=j+nxt[k][1];
+				if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+				if(a[i][j]==a[nx][ny]){
+					int fx=find(num(i,j)),fy=find(num(nx,ny));
+					if(fx==fy) continue ;
+					Ans[q]--;
+					fa[fx]=fy;
+				}
+			}
+		}
+	}
+//	printf(&quot;%d\n&quot;,Ans[q]);
+	int last=q;
+	for(int i=q-1;i&gt;=1;i--){
+		if(Q[i].c!=Q[last].c){
+			solve(i+1,last);
+			last=i;
+		}
+	}
+	solve(1,last);
+	for(int i=q-1;i&gt;=1;i--){
+		Ans[i]=Ans[i+1]-ans[i+1];
+	}
+	for(int i=1;i&lt;=q;i++){
+		printf(&quot;%d\n&quot;,Ans[i]);
+	}
+	return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello Gridea]]></title>
+        <id>https://dabuliuzp.github.io/post/hello-gridea/</id>
+        <link href="https://dabuliuzp.github.io/post/hello-gridea/">
+        </link>
+        <updated>2018-12-11T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+<!-- more -->
+<p><a href="https://github.com/getgridea/gridea">Github</a><br>
+<a href="https://gridea.dev/">Gridea 主页</a><br>
+<a href="http://fehey.com/">示例网站</a></p>
+<h2 id="特性">特性👇</h2>
+<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
+<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
+<p>🏷️  你可以对文章进行标签分组</p>
+<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
+<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
+<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
+<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
+<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
+<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
+<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
+<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
+<p>未来，它一定会成为你离不开的伙伴</p>
+<p>尽情发挥你的才华吧！</p>
+<p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+</feed>

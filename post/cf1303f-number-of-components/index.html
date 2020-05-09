@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>CF1303F Number of Components | Dabuliuzp | 菜鸡</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://dabuliuzp.github.io/favicon.ico?v=1589011589895">
+<link rel="stylesheet" href="https://dabuliuzp.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="这题的思路很明显，但是我太菜了，被奇怪的细节恶心到了😆
+看到 ci≤ci+1c_i\le c_{i+1}ci​≤ci+1​ ，很显然的，将元素相同的和一起，分块讨论。
+对于一个块，考虑到有两种情况：
+
+同元素的联通块的个数，这个正序直接用..." />
+    <meta name="keywords" content="题解" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://dabuliuzp.github.io">
+        <img src="https://dabuliuzp.github.io/images/avatar.png?v=1589011589895" class="site-logo">
+        <h1 class="site-title">Dabuliuzp | 菜鸡</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      『きみと见た梦は 必ず持ってくよ』
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://dabuliuzp.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">CF1303F Number of Components</h2>
+            <div class="post-date">2020-05-03</div>
+            
+              <div class="feature-container" style="background-image: url('http://img.xjh.me/desktop/bg/nature/62824816_p0.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>这题的思路很明显，但是我太菜了，被奇怪的细节恶心到了😆<br>
+看到 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>c</mi><mi>i</mi></msub><mo>≤</mo><msub><mi>c</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">c_i\le c_{i+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7859700000000001em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathdefault">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span> ，很显然的，将元素相同的和一起，分块讨论。<br>
+对于一个块，考虑到有两种情况：</p>
+<ol>
+<li>同元素的联通块的个数，这个正序直接用并查集连接就可以维护了。</li>
+<li>其他元素的联通块个数，由于是分开讨论，所以不存在和修改的元素相同的元素，考虑倒序，每次恢复时相当于将周围的块联通，可以用并查集维护。<br>
+然后就是奇怪的细节问题了，我竟然栽在了求方格的序号上 😂<br>
+然后是丑陋的代码：</li>
+</ol>
+<pre><code>#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+using namespace std;
+
+const int M=305,N=2e6+5;
+
+int n,m,q,a[M][M];
+int fa[M*M],Fa[M*M],ans[N],Ans[N];
+int nxt[4][2]={{1,0},{0,1},{-1,0},{0,-1}};
+bool b[M][M];
+struct Query{
+	int x,y,c,nc;
+}Q[N];
+
+int read(){
+	int x=0,y=1;
+	char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){
+		if(ch=='-') y=-1;
+		ch=getchar();
+	}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){
+		x=x*10+ch-'0';
+		ch=getchar();
+	}
+	return x*y;
+}
+
+int num(int x,int y){
+	return m*(x-1)+y;
+}
+
+int find(int x){
+	if(x!=fa[x]) fa[x]=find(fa[x]);
+	return fa[x];
+}
+
+int Find(int x){
+	if(x!=Fa[x]) Fa[x]=Find(Fa[x]);
+	return Fa[x];
+}
+
+void solve(int l,int r){
+	for(int i=l;i&lt;=r;i++){
+		int x=Q[i].x,y=Q[i].y;
+		if(b[x][y]){
+			continue ;
+		}
+		b[x][y]=1;
+		ans[i]=1;
+		for(int k=0;k&lt;4;k++){
+			int nx=x+nxt[k][0],ny=y+nxt[k][1];
+			if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+			if(b[nx][ny]){
+				int Fx=Find(num(x,y)),Fy=Find(num(nx,ny));
+				if(Fx==Fy) continue ;
+				ans[i]--;
+				Fa[Fx]=Fy;
+			}
+		}
+	}
+//	printf(&quot;%d %d:&quot;,l,r);
+//	for(int i=l;i&lt;=r;i++) printf(&quot;%d &quot;,ans[i][0]);printf(&quot;\n&quot;);
+	for(int i=l;i&lt;=r;i++){
+		int x=Q[i].x,y=Q[i].y;
+		b[x][y]=0;
+		Fa[num(x,y)]=num(x,y);
+	}
+	for(int i=r;i&gt;=l;i--){
+		int x=Q[i].x,y=Q[i].y;
+		if(a[x][y]==Q[i].nc){
+			continue ;
+		}
+		a[x][y]=Q[i].nc;
+		ans[i]--;
+		fa[num(x,y)]=0;
+		for(int k=0;k&lt;4;k++){
+			int nx=x+nxt[k][0],ny=y+nxt[k][1];
+			if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+			if(a[x][y]==a[nx][ny]){
+				if(fa[num(x,y)]==0){
+					fa[num(x,y)]=find(num(nx,ny));
+					ans[i]++;
+					continue ;
+				}
+				int fx=find(num(x,y)),fy=find(num(nx,ny));
+				if(fx==fy) continue ;
+				ans[i]++;
+				fa[fx]=fy;
+			}
+		}
+		if(fa[num(x,y)]==0){
+			fa[num(x,y)]=num(x,y);
+		}
+	}
+//	printf(&quot;%d %d:&quot;,l,r);
+//	for(int i=l;i&lt;=r;i++) printf(&quot;%d &quot;,ans[i][1]);printf(&quot;\n&quot;);
+//	for(int i=r;i&gt;=l;i--){
+//		if(i==q) continue ;
+//		Ans[i]=Ans[i+1]-anss;
+//	}
+}
+
+int main(){
+	n=read(),m=read(),q=read();
+	for(int i=1;i&lt;=q;i++){
+		Q[i].x=read();
+		Q[i].y=read();
+		Q[i].c=read();
+		Q[i].nc=a[Q[i].x][Q[i].y];
+		a[Q[i].x][Q[i].y]=Q[i].c;
+	}
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			fa[num(i,j)]=Fa[num(i,j)]=num(i,j);
+		}
+	}
+	Ans[q]=0;
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			Ans[q]++;
+			for(int k=0;k&lt;4;k++){
+				int nx=i+nxt[k][0],ny=j+nxt[k][1];
+				if(nx&lt;1||nx&gt;n||ny&lt;1||ny&gt;m) continue ;
+				if(a[i][j]==a[nx][ny]){
+					int fx=find(num(i,j)),fy=find(num(nx,ny));
+					if(fx==fy) continue ;
+					Ans[q]--;
+					fa[fx]=fy;
+				}
+			}
+		}
+	}
+//	printf(&quot;%d\n&quot;,Ans[q]);
+	int last=q;
+	for(int i=q-1;i&gt;=1;i--){
+		if(Q[i].c!=Q[last].c){
+			solve(i+1,last);
+			last=i;
+		}
+	}
+	solve(1,last);
+	for(int i=q-1;i&gt;=1;i--){
+		Ans[i]=Ans[i+1]-ans[i+1];
+	}
+	for(int i=1;i&lt;=q;i++){
+		printf(&quot;%d\n&quot;,Ans[i]);
+	}
+	return 0;
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://dabuliuzp.github.io/tag/JF31Rholi/" class="tag">
+                    题解
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://dabuliuzp.github.io/post/hello-gridea/">
+                  <h3 class="post-title">
+                    Hello Gridea
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
